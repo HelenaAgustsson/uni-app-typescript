@@ -11,6 +11,22 @@ export class Program {
   name: string = '';
 }
 
+class ProgramService {
+  getPrograms(success: (programs: Program[]) => void) {
+    pool.query('SELECT * FROM Programs', (error, results) => {
+      if (error) return console.error(error);
+
+      success(results);
+    });
+  }
+  getProgram(id: number, success: (program: Program) => void) {
+    pool.query('SELECT * FROM Programs WHERE id=?', [id], (error, results) => {
+      if (error) return console.error(error);
+      success(results[0]);
+    });
+  }
+}
+
 class StudentService {
   getStudents(success: (students: Student[]) => void) {
     pool.query('SELECT * FROM Students', (error, results) => {
@@ -41,3 +57,4 @@ class StudentService {
   }
 }
 export let studentService = new StudentService();
+export let programService = new ProgramService();

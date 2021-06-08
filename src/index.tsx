@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
-import ReactDOM from 'react-dom';
+import ReactDOM, { render } from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
 import { Student, studentService } from './services';
+import { Program, programService } from './services';
 import { Alert, Card, Row, Column, NavBar, Button, Form } from './widgets';
 import { createHashHistory } from 'history';
 
@@ -13,6 +14,7 @@ class Menu extends Component {
     return (
       <NavBar brand="StudAdm">
         <NavBar.Link to="/students">Students</NavBar.Link>
+        <NavBar.Link to="/programs">Programs</NavBar.Link>
       </NavBar>
     );
   }
@@ -45,6 +47,34 @@ class StudentList extends Component {
     studentService.getStudents((students) => {
       this.students = students;
     });
+  }
+}
+
+class ProgramDetails extends Component<{ match: { params: { id: string } } }> {
+  program = new Program();
+
+  render() {
+    return (
+      <div>
+        <Card title="Program details">
+          <Row>
+            <Column width={2}>Name:</Column>
+            <Column>{this.program.name}</Column>
+          </Row>
+        </Card>
+        <Button.Light onClick={this.edit}>Edit</Button.Light>
+      </div>
+    );
+  }
+
+  mounted() {
+    programService.getProgram(Number(this.props.match.params.id), (program) => {
+      this.program = program;
+    });
+  }
+
+  edit() {
+    history.push('/programs/' + this.program.id + '/edit');
   }
 }
 
@@ -129,6 +159,29 @@ class StudentEdit extends Component<{ match: { params: { id: string } } }> {
   }
 }
 
+class ProgramList extends Component {
+  programs: Program[] = [];
+
+  render() {
+    return (
+      <Card title="Programs">
+        {this.programs.map((program) => (
+          <Row key={program.id}>
+            <Column>
+              <NavLink to={'/programs/' + program.id}>{program.name}</NavLink>
+            </Column>
+          </Row>
+        ))}
+      </Card>
+    );
+  }
+  mounted() {
+    programService.getPrograms((programs) => {
+      this.programs = programs;
+    });
+  }
+}
+
 ReactDOM.render(
   <div>
     <Alert />
@@ -139,6 +192,8 @@ ReactDOM.render(
         <Route exact path="/students" component={StudentList} />
         <Route exact path="/students/:id" component={StudentDetails} />
         <Route exact path="/students/:id/edit" component={StudentEdit} />
+        <Route exact path="/programs" component={ProgramList} />
+        <Route exact path="/programs/:id" component={ProgramDetails} />
       </div>
     </HashRouter>
   </div>,
