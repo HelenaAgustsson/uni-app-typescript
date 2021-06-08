@@ -28,17 +28,26 @@ class Home extends Component {
 
 class StudentList extends Component {
   students: Student[] = [];
+  search: string = '';
 
   render() {
     return (
       <Card title="Students">
-        {this.students.map((student) => (
-          <Row key={student.id}>
-            <Column>
-              <NavLink to={'/students/' + student.id}>{student.name}</NavLink>
-            </Column>
-          </Row>
-        ))}
+        <Form.Label>Search students:</Form.Label>
+        <Form.Input
+          type="text"
+          value={this.search}
+          onChange={(event) => (this.search = event.currentTarget.value)}
+        />
+        {this.students
+          .filter((student) => student.name.includes(this.search))
+          .map((student) => (
+            <Row key={student.id}>
+              <Column>
+                <NavLink to={'/students/' + student.id}>{student.name}</NavLink>
+              </Column>
+            </Row>
+          ))}
       </Card>
     );
   }
