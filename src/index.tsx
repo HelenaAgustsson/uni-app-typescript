@@ -50,34 +50,6 @@ class StudentList extends Component {
   }
 }
 
-class ProgramDetails extends Component<{ match: { params: { id: string } } }> {
-  program = new Program();
-
-  render() {
-    return (
-      <div>
-        <Card title="Program details">
-          <Row>
-            <Column width={2}>Name:</Column>
-            <Column>{this.program.name}</Column>
-          </Row>
-        </Card>
-        <Button.Light onClick={this.edit}>Edit</Button.Light>
-      </div>
-    );
-  }
-
-  mounted() {
-    programService.getProgram(Number(this.props.match.params.id), (program) => {
-      this.program = program;
-    });
-  }
-
-  edit() {
-    history.push('/programs/' + this.program.id + '/edit');
-  }
-}
-
 class StudentDetails extends Component<{ match: { params: { id: string } } }> {
   student = new Student();
 
@@ -182,6 +154,72 @@ class ProgramList extends Component {
   }
 }
 
+class ProgramDetails extends Component<{ match: { params: { id: string } } }> {
+  program = new Program();
+
+  render() {
+    return (
+      <div>
+        <Card title="Program details">
+          <Row>
+            <Column width={2}>Name:</Column>
+            <Column>{this.program.name}</Column>
+          </Row>
+        </Card>
+        <Button.Light onClick={this.edit}>Edit</Button.Light>
+      </div>
+    );
+  }
+
+  mounted() {
+    programService.getProgram(Number(this.props.match.params.id), (program) => {
+      this.program = program;
+    });
+  }
+
+  edit() {
+    history.push('/programs/' + this.program.id + '/edit');
+  }
+}
+
+class ProgramEdit extends Component<{ match: { params: { id: string } } }> {
+  program = new Program();
+
+  render() {
+    return (
+      <div>
+        <Card title="Edit Program">
+          <Form.Label>Name:</Form.Label>
+          <Form.Input
+            type="text"
+            value={this.program.name}
+            onChange={(event) => (this.program.name = event.currentTarget.value)}
+          />
+        </Card>
+        <Row>
+          <Column>
+            <Button.Success onClick={this.save}>Save</Button.Success>
+          </Column>
+          <Column right>
+            <Button.Light onClick={this.cancel}>Cancel</Button.Light>
+          </Column>
+        </Row>
+      </div>
+    );
+  }
+  mounted() {
+    programService.getProgram(Number(this.props.match.params.id), (program) => {
+      this.program = program;
+    });
+  }
+  save() {
+    programService.updateProgram(this.program, () => {
+      history.push('/programs');
+    });
+  }
+  cancel() {}
+}
+
 ReactDOM.render(
   <div>
     <Alert />
@@ -194,6 +232,7 @@ ReactDOM.render(
         <Route exact path="/students/:id/edit" component={StudentEdit} />
         <Route exact path="/programs" component={ProgramList} />
         <Route exact path="/programs/:id" component={ProgramDetails} />
+        <Route exact path="/programs/:id/edit" component={ProgramEdit} />
       </div>
     </HashRouter>
   </div>,

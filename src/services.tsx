@@ -25,6 +25,12 @@ class ProgramService {
       success(results[0]);
     });
   }
+  updateProgram(program: Program, success: () => void) {
+    pool.query('UPDATE Programs SET name=? WHERE id=?', [program.name, program.id], (error) => {
+      if (error) return console.error(error);
+      success();
+    });
+  }
 }
 
 class StudentService {
