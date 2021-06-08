@@ -54,6 +54,16 @@ class StudentService {
     });
   }
 
+  getStudentsAndPrograms(success: (students: Student[]) => void) {
+    pool.query(
+      'SELECT Students.id AS id, Students.name AS name, email, program_id, Programs.name AS program_name FROM Students INNER JOIN Programs ON Students.program_id = Programs.id',
+      (error, results) => {
+        if (error) return console.error(error);
+        success(results);
+      }
+    );
+  }
+
   getStudent(id: number, success: (student: Student) => void) {
     pool.query('SELECT * FROM Students WHERE id=?', [id], (error, results) => {
       if (error) return console.error(error);

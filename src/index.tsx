@@ -29,18 +29,38 @@ class Home extends Component {
 class StudentList extends Component {
   students: Student[] = [];
   search: string = '';
+  searchProgram: string = '';
 
   render() {
     return (
       <Card title="Students">
-        <Form.Label>Search students:</Form.Label>
-        <Form.Input
-          type="text"
-          value={this.search}
-          onChange={(event) => (this.search = event.currentTarget.value)}
-        />
+        <Row>
+          <Column width={4}>
+            <Form.Label>Search by name:</Form.Label>
+          </Column>
+          <Column>
+            <Form.Input
+              type="text"
+              value={this.search}
+              onChange={(event) => (this.search = event.currentTarget.value)}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column width={4}>
+            <Form.Label>Search by program:</Form.Label>
+          </Column>
+          <Column>
+            <Form.Input
+              type="text"
+              value={this.searchProgram}
+              onChange={(event) => (this.searchProgram = event.currentTarget.value)}
+            />
+          </Column>
+        </Row>
         {this.students
           .filter((student) => student.name.includes(this.search))
+          .filter((student) => student.program_name.includes(this.searchProgram))
           .map((student) => (
             <Row key={student.id}>
               <Column>
@@ -53,7 +73,7 @@ class StudentList extends Component {
   }
 
   mounted() {
-    studentService.getStudents((students) => {
+    studentService.getStudentsAndPrograms((students) => {
       this.students = students;
     });
   }
