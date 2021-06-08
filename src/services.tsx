@@ -6,6 +6,11 @@ export class Student {
   email: string = '';
 }
 
+export class Program {
+  id: number = 0;
+  name: string = '';
+}
+
 class StudentService {
   getStudents(success: (students: Student[]) => void) {
     pool.query('SELECT * FROM Students', (error, results) => {
