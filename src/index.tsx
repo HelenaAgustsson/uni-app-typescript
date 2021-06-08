@@ -65,6 +65,10 @@ class StudentDetails extends Component<{ match: { params: { id: string } } }> {
             <Column width={2}>Email:</Column>
             <Column>{this.student.email}</Column>
           </Row>
+          <Row>
+            <Column width={2}>Program:</Column>
+            <Column>{this.student.program_name}</Column>
+          </Row>
         </Card>
         <Button.Light onClick={this.edit}>Edit</Button.Light>
       </div>
@@ -72,7 +76,7 @@ class StudentDetails extends Component<{ match: { params: { id: string } } }> {
   }
 
   mounted() {
-    studentService.getStudent(Number(this.props.match.params.id), (student) => {
+    studentService.getStudentPrograms(Number(this.props.match.params.id), (student) => {
       this.student = student;
     });
   }
@@ -84,6 +88,7 @@ class StudentDetails extends Component<{ match: { params: { id: string } } }> {
 
 class StudentEdit extends Component<{ match: { params: { id: string } } }> {
   student = new Student();
+  programs: Program[] = [];
 
   render() {
     return (
@@ -101,6 +106,17 @@ class StudentEdit extends Component<{ match: { params: { id: string } } }> {
             value={this.student.email}
             onChange={(event) => (this.student.email = event.currentTarget.value)}
           />
+          <Form.Label>Program:</Form.Label>
+          <Form.Select
+            value={this.student.program_id}
+            onChange={(event) => (this.student.program_id = Number(event.currentTarget.value))}
+          >
+            {this.programs.map((program) => (
+              <option key={program.id} value={program.id}>
+                {program.name}
+              </option>
+            ))}
+          </Form.Select>
         </Card>
         <Row>
           <Column>
@@ -115,9 +131,10 @@ class StudentEdit extends Component<{ match: { params: { id: string } } }> {
   }
 
   mounted() {
-    studentService.getStudent(Number(this.props.match.params.id), (student) => {
+    studentService.getStudentPrograms(Number(this.props.match.params.id), (student) => {
       this.student = student;
     });
+    programService.getPrograms((programs) => (this.programs = programs));
   }
 
   save() {

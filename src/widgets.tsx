@@ -173,12 +173,26 @@ class FormInput extends Component<{
   }
 }
 
+class FormSelect extends Component<{
+  value: string | number;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+}> {
+  render() {
+    return (
+      <select className="form-select" value={this.props.value} onChange={this.props.onChange}>
+        {this.props.children}
+      </select>
+    );
+  }
+}
+
 /**
  * Renders form components using Bootstrap styles.
  */
 export class Form {
   static Label = FormLabel;
   static Input = FormInput;
+  static Select = FormSelect;
 }
 
 /**

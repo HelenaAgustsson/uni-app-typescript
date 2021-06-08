@@ -4,6 +4,8 @@ export class Student {
   id: number = 0;
   name: string = '';
   email: string = '';
+  program_id: number = 0;
+  program_name: string = '';
 }
 
 export class Program {
@@ -23,6 +25,16 @@ class ProgramService {
     pool.query('SELECT * FROM Programs WHERE id=?', [id], (error, results) => {
       if (error) return console.error(error);
       success(results[0]);
+    });
+  }
+  getStudentProgram(id: number, success: (program: string) => void) {
+    pool.query('SELECT * FROM Programs WHERE id=?', [id], (error, results) => {
+      if (error) return console.error(error);
+      if (!results[0]) {
+        success('None');
+      } else {
+        success(results[0].name);
+      }
     });
   }
   updateProgram(program: Program, success: () => void) {
@@ -48,6 +60,17 @@ class StudentService {
 
       success(results[0]);
     });
+  }
+
+  getStudentPrograms(id: number, success: (student: Student) => void) {
+    pool.query(
+      'SELECT Students.id AS id, Students.name AS name, email, program_id, Programs.name AS program_name FROM Students INNER JOIN Programs ON Students.program_id = Programs.id WHERE Students.id=?',
+      [id],
+      (error, results) => {
+        if (error) return console.error(error);
+        success(results[0]);
+      }
+    );
   }
 
   updateStudent(student: Student, success: () => void) {
